@@ -20,7 +20,7 @@ import os
 
 # BEFORE loading the model and OUTSIDE is_main_process():
 user_secrets = UserSecretsClient()
-hf_token = os.getenv("HF_TOKEN") or user_secrets.get_secret("HF_TOKEN")
+hf_token = os.getenv("HF_TOKEN") 
 assert hf_token, "Set HF_TOKEN in Kaggle Secrets"
 os.environ["HUGGINGFACE_HUB_TOKEN"] = hf_token   # ensures no prompt on any rank
 login(hf_token)  # idempotent; safe on all ranks
@@ -38,7 +38,7 @@ if torch.cuda.is_available():
 
 # Optional: login/init only on rank-0
 if is_main_process():
-    wb_token = os.getenv("WANDB_TOKEN") or UserSecretsClient().get_secret("WANDB_API_KEY")
+    wb_token = os.getenv("WANDB_TOKEN") 
     import wandb
     wandb.login(key=wb_token)
     wandb.init(project="Fine-tune Llama-3.1-8B for medical qa", job_type="training", anonymous="allow")
