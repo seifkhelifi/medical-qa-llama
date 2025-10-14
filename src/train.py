@@ -72,7 +72,7 @@ if tokenizer.pad_token is None:
 # ==========================================================
 
 formatted_dataset = prepare_llama3_dataset(
-    dataset_name="petkopetkov/medical-question-answering-synthetic",
+    dataset_name="petkopetkov/medical-question-answering-all",
     tokenizer=tokenizer
 )
 
@@ -105,8 +105,8 @@ model = FastLanguageModel.get_peft_model(
 report_to = ["wandb"] if is_main_process() else ["none"]
 
 training_args = TrainingArguments(
-    per_device_train_batch_size=2,
-    gradient_accumulation_steps=8,
+    per_device_train_batch_size=16,
+    gradient_accumulation_steps=4,
     warmup_steps=50,
     max_steps=200,
     learning_rate=2e-4,
