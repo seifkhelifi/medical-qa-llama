@@ -16,25 +16,35 @@ from dotenv import load_dotenv
 from data_preparation import prepare_llama3_dataset
 
 
-load_dotenv()
+import os
+
+def is_main_process() -> bool:
+    # Works for torchrun and Accelerate
+    return int(os.environ.get("RANK", "0")) == 0
+
+# Disable W&B on non-zero ranks to avoid duplicate runs
+if not is_main_process():
+    os.environ["WANDB_DISABLED"] = "true"
+
+if is_main_process():
+    load_dotenv()
+    user_secrets = UserSecretsClient()
 
 
+    hf_token = os.getenv("HF_TOKEN")
+    login(hf_token)
+    
+    
+    wb_token = os.getenv("WANDB_TOKEN")
+    
+    wandb.login(key=wb_token)
+    run = wandb.init(
+        project='Fine-tune Llama-3.1-8B for medical qa', 
+        job_type="training", 
+        anonymous="allow"
+    )
 
-user_secrets = UserSecretsClient()
-
-
-hf_token = os.getenv("HF_TOKEN")
-login(hf_token)
-
-
-wb_token = os.getenv("WANDB_TOKEN")
-
-wandb.login(key=wb_token)
-run = wandb.init(
-    project='Fine-tune Llama-3.1-8B for medical qa', 
-    job_type="training", 
-    anonymous="allow"
-)
+    
 
 model, tokenizer = FastLanguageModel.from_pretrained(
     model_name = "unsloth/Meta-Llama-3.1-8B-bnb-4bit",
