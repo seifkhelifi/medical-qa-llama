@@ -117,8 +117,9 @@ training_args = TrainingArguments(
     learning_rate=2e-4,
     fp16=not is_bfloat16_supported(),
     bf16=is_bfloat16_supported(),
-    logging_steps=5,
-    optim="adamw_8bit",
+    logging_steps=1,
+    evaluation_strategy="steps",   # ← add this
+    eval_steps=10,                 # evaluate every 50 steps (or 100 for cheaper)    optim="adamw_8bit",
     weight_decay=0.01,
     lr_scheduler_type="linear",
     seed=3407,
