@@ -19,12 +19,13 @@ from data_preparation import prepare_llama3_dataset
 import os
 
 def is_main_process() -> bool:
-    # Works for torchrun and Accelerate
-    return int(os.environ.get("RANK", "0")) == 0
+    r = os.environ.get("RANK")
+    return r is None or r == "0"
 
-# Disable W&B on non-zero ranks to avoid duplicate runs
-if not is_main_process():
-    os.environ["WANDB_DISABLED"] = "true"
+# set device for each process
+if torch.cuda.is_available():
+    local_rank = int(os.environ.get("LOCAL_RANK", 0))
+    torch.cuda.set_device(local_rank)
 
 if is_main_process():
     load_dotenv()
@@ -33,10 +34,10 @@ if is_main_process():
 
     hf_token = os.getenv("HF_TOKEN")
     login(hf_token)
-    
-    
+
+
     wb_token = os.getenv("WANDB_TOKEN")
-    
+
     wandb.login(key=wb_token)
     run = wandb.init(
         project='Fine-tune Llama-3.1-8B for medical qa', 
@@ -91,6 +92,7 @@ model = FastLanguageModel.get_peft_model(
     loftq_config=None,
 )
 
+report_to = ["wandb"] if is_main_process() else ["none"]  # <- key change
 
 
 trainer = SFTTrainer(
