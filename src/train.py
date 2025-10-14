@@ -10,6 +10,7 @@ from trl import SFTTrainer
 from transformers import TrainingArguments
 from kaggle_secrets import UserSecretsClient
 
+
 from data_preparation import prepare_llama3_dataset
 
 # ==========================================================
@@ -39,7 +40,8 @@ hf_token = os.getenv("HF_TOKEN")
 # ==========================================================
 if is_main_process():
     import wandb
-    wb_token = os.getenv("WANDB_API_KEY") 
+    user_secrets = UserSecretsClient()
+    wb_token = user_secrets.get_secret("WANDB_API_KEY")
     if wb_token:
         wandb.login(key=wb_token)
         wandb.init(
@@ -49,6 +51,9 @@ if is_main_process():
         )
     else:
         print("⚠️ No W&B token found. Training will continue without logging.")
+        
+        
+
 
 # ==========================================================
 # Load Model
