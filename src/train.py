@@ -32,6 +32,10 @@ def is_main_process() -> bool:
     r = os.environ.get("RANK")
     return r is None or r == "0"
 
+if torch.cuda.is_available():
+    local_rank = int(os.environ.get("LOCAL_RANK", 0))
+    torch.cuda.set_device(local_rank)
+
 # Optional: login/init only on rank-0
 if is_main_process():
     wb_token = os.getenv("WANDB_TOKEN") or UserSecretsClient().get_secret("WANDB_API_KEY")
@@ -85,7 +89,7 @@ model = FastLanguageModel.get_peft_model(
     loftq_config=None,
 )
 
-report_to = ["wandb"] if is_main_process() else ["none"]  # <- key change
+report_to = ["wandb"] if is_main_process() else ["none"]
 
 
 trainer = SFTTrainer(
@@ -114,7 +118,7 @@ trainer = SFTTrainer(
         ddp_find_unused_parameters = False,
 
         # >>> Logging:
-        report_to = ["wandb"],               # Trainer will push to your W&B project
+        report_to = report_to,               # Trainer will push to your W&B project
         run_name = "llama-8b-ddp-medqa",
 
         # (Optional niceties)
