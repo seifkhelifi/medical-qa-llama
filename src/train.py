@@ -33,7 +33,6 @@ if torch.cuda.is_available():
 # ==========================================================
 user_secrets = UserSecretsClient()
 hf_token = os.getenv("HF_TOKEN") 
-os.environ["HUGGINGFACE_HUB_TOKEN"] = hf_token
 
 # ==========================================================
 # Optional: W&B on main process only
