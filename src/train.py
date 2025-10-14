@@ -18,33 +18,26 @@ from data_preparation import prepare_llama3_dataset
 
 import os
 
+# BEFORE loading the model and OUTSIDE is_main_process():
+user_secrets = UserSecretsClient()
+hf_token = os.getenv("HF_TOKEN") or user_secrets.get_secret("HF_TOKEN")
+assert hf_token, "Set HF_TOKEN in Kaggle Secrets"
+os.environ["HUGGINGFACE_HUB_TOKEN"] = hf_token   # ensures no prompt on any rank
+login(hf_token)  # idempotent; safe on all ranks
+
+os.environ.setdefault("NCCL_P2P_DISABLE", "1")
+os.environ.setdefault("NCCL_IB_DISABLE", "1")
+
 def is_main_process() -> bool:
     r = os.environ.get("RANK")
     return r is None or r == "0"
 
-# set device for each process
-if torch.cuda.is_available():
-    local_rank = int(os.environ.get("LOCAL_RANK", 0))
-    torch.cuda.set_device(local_rank)
-
+# Optional: login/init only on rank-0
 if is_main_process():
-    load_dotenv()
-    user_secrets = UserSecretsClient()
-
-
-    hf_token = os.getenv("HF_TOKEN")
-    login(hf_token)
-
-
-    wb_token = os.getenv("WANDB_TOKEN")
-
+    wb_token = os.getenv("WANDB_TOKEN") or UserSecretsClient().get_secret("WANDB_API_KEY")
+    import wandb
     wandb.login(key=wb_token)
-    run = wandb.init(
-        project='Fine-tune Llama-3.1-8B for medical qa', 
-        job_type="training", 
-        anonymous="allow"
-    )
-
+    wandb.init(project="Fine-tune Llama-3.1-8B for medical qa", job_type="training", anonymous="allow")
     
 
 model, tokenizer = FastLanguageModel.from_pretrained(
