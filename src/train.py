@@ -128,6 +128,7 @@ training_args = TrainingArguments(
     run_name="llama-8b-ddp-medqa",
     save_steps=200,
     save_total_limit=2,
+    average_tokens_across_devices=False
 )
 
 trainer = SFTTrainer(
