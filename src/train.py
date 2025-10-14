@@ -32,7 +32,7 @@ if torch.cuda.is_available():
 # Hugging Face Authentication (for all ranks)
 # ==========================================================
 user_secrets = UserSecretsClient()
-hf_token = os.getenv("HF_TOKEN") or user_secrets.get_secret("HF_TOKEN")
+hf_token = os.getenv("HF_TOKEN") 
 assert hf_token, "❌ Missing HF_TOKEN in Kaggle Secrets. Add it via 'Add-ons → Secrets'."
 os.environ["HUGGINGFACE_HUB_TOKEN"] = hf_token
 
@@ -41,7 +41,7 @@ os.environ["HUGGINGFACE_HUB_TOKEN"] = hf_token
 # ==========================================================
 if is_main_process():
     import wandb
-    wb_token = os.getenv("WANDB_API_KEY") or user_secrets.get_secret("WANDB_API_KEY")
+    wb_token = os.getenv("WANDB_API_KEY") 
     if wb_token:
         wandb.login(key=wb_token)
         wandb.init(
