@@ -33,7 +33,6 @@ if torch.cuda.is_available():
 # ==========================================================
 user_secrets = UserSecretsClient()
 hf_token = os.getenv("HF_TOKEN") 
-assert hf_token, "❌ Missing HF_TOKEN in Kaggle Secrets. Add it via 'Add-ons → Secrets'."
 os.environ["HUGGINGFACE_HUB_TOKEN"] = hf_token
 
 # ==========================================================
