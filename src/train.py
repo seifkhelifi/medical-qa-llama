@@ -167,7 +167,6 @@ trainer = SFTTrainer(
     eval_dataset=formatted_dataset["validation"],
     dataset_text_field="text",
     max_seq_length=1024,
-    packing=True,
     dataset_num_proc=2,
     args=training_args,
     data_collator=collator,
