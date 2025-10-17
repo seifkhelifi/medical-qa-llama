@@ -1,4 +1,9 @@
 program: train.py
+command:
+  - sh
+  - -lc
+  - >
+    torchrun --nproc_per_node=2 train.py
 method: bayes
 metric:
   name: proxy_val_loss
@@ -9,7 +14,7 @@ parameters:
     min: 1.0e-4
     max: 3.0e-4
   warmup_ratio:
-    values: [0.0, 0.03, 0.06]
+    values: [0.00, 0.03, 0.06]
   weight_decay:
     values: [0.0, 0.01]
   lr_scheduler_type:
@@ -21,12 +26,12 @@ parameters:
   lora_dropout:
     values: [0.0, 0.05]
   max_seq_length:
-    values: [384, 512]   # proxy, faster than 1024
+    values: [384, 512]      # fast proxy
   per_device_train_batch_size:
-    values: [8]          # safe on 10 GB T4; keep fixed in proxy
+    values: [32]            # you have headroom; GAS=1
   gradient_accumulation_steps:
-    values: [4]          # keep effective batch stable
+    values: [1]
   max_steps:
-    values: [40]         # proxy: ~minutes, not hours
-  eval_every:
-    values: [40]         # 1 eval at the end of proxy trial
+    values: [101]           # your fast loop
+  eval_subset_size:
+    values: [1000]          # eval only on 1k, once at the end
