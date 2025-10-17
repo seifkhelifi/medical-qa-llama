@@ -9,8 +9,7 @@ from unsloth import FastLanguageModel, is_bfloat16_supported
 from trl import SFTTrainer
 from transformers import TrainingArguments
 from kaggle_secrets import UserSecretsClient
-from trl import SFTTrainer, DataCollatorForCompletionOnlyLM
-
+from trl import SFTTrainer, DataCollatorForCompletionOnly
 
 from data_preparation import prepare_qwen_dataset
 
@@ -99,7 +98,7 @@ formatted_dataset = prepare_qwen_dataset(
 # With your template, each assistant block begins with this *exact* substring + newline:
 response_template = "<|im_start|>assistant\n"
 
-collator = DataCollatorForCompletionOnlyLM(
+collator = DataCollatorForCompletionOnly(
     response_template=response_template,
     tokenizer=tokenizer,
 )
@@ -138,7 +137,7 @@ model = FastLanguageModel.get_peft_model(
 report_to = ["wandb"] if is_main_process() else ["none"]
 
 training_args = TrainingArguments(
-    per_device_train_batch_size=128,
+    per_device_train_batch_size=16,
     # gradient_accumulation_steps=4,
     warmup_steps=50,
     max_steps=101,
