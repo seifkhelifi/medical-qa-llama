@@ -9,7 +9,7 @@ from unsloth import FastLanguageModel, is_bfloat16_supported
 from trl import SFTTrainer
 from transformers import TrainingArguments
 from kaggle_secrets import UserSecretsClient
-from trl import SFTTrainer, DataCollatorForCompletionOnly
+from trl import SFTTrainer, DataCollatorForCompletionOnlyLM
 
 from data_preparation import prepare_qwen_dataset
 
@@ -98,7 +98,7 @@ formatted_dataset = prepare_qwen_dataset(
 # With your template, each assistant block begins with this *exact* substring + newline:
 response_template = "<|im_start|>assistant\n"
 
-collator = DataCollatorForCompletionOnly(
+collator = DataCollatorForCompletionOnlyLM(
     response_template=response_template,
     tokenizer=tokenizer,
 )
