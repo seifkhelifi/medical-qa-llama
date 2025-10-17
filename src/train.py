@@ -63,23 +63,16 @@ if is_main_process():
 # ==========================================================
 # Load Model
 # ==========================================================
-# model, tokenizer = FastLanguageModel.from_pretrained(
-#     model_name="unsloth/Meta-Llama-3.1-8B-bnb-4bit",
-#     max_seq_length=1024,
-#     load_in_4bit=True,
-#     load_in_8bit=False,
-#     full_finetuning=False,  # LoRA finetuning mode
-#     device_map=None,  # DDP needs full copy per rank
-#     token=hf_token,
-# )
-
 model, tokenizer = FastLanguageModel.from_pretrained(
     model_name="unsloth/Qwen3-4B-Instruct-2507",
     max_seq_length=1024,
+    load_in_4bit=True,
+    load_in_8bit=False,
     full_finetuning=False,  # LoRA finetuning mode
     device_map=None,  # DDP needs full copy per rank
     token=hf_token,
 )
+
 
 tokenizer.padding_side = "right"
 if tokenizer.pad_token is None:
@@ -137,7 +130,7 @@ model = FastLanguageModel.get_peft_model(
 report_to = ["wandb"] if is_main_process() else ["none"]
 
 training_args = TrainingArguments(
-    per_device_train_batch_size=16,
+    per_device_train_batch_size=32,
     # gradient_accumulation_steps=4,
     warmup_steps=50,
     max_steps=101,
