@@ -64,7 +64,7 @@ if is_main_process():
 # Load Model
 # ==========================================================
 model, tokenizer = FastLanguageModel.from_pretrained(
-    model_name="unsloth/Qwen3-4B-Instruct-2507",
+    model_name="unsloth/Qwen3-4B-Instruct-2507-unsloth-bnb-4bit",
     max_seq_length=1024,
     load_in_4bit=True,
     load_in_8bit=False,
@@ -140,7 +140,7 @@ training_args = TrainingArguments(
     logging_steps=1,
     eval_strategy="steps",  # ← add this
     eval_steps=50,  # evaluate every 50 steps (or 100 for cheaper)    optim="adamw_8bit",
-    optim="adamw_torch_fused",  # Faster and more stable
+    optim="adamw_8bit",  # Faster and more stable
     weight_decay=0.01,
     lr_scheduler_type="linear",
     seed=3407,
