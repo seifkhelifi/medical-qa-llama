@@ -64,7 +64,7 @@ if is_main_process():
 # Load Model
 # ==========================================================
 model, tokenizer = FastLanguageModel.from_pretrained(
-    model_name="unsloth/Llama-3.2-3B-bnb-4bit",
+    model_name="unsloth/Meta-Llama-3.1-8B-bnb-4bit",
     max_seq_length=1024,
     load_in_4bit=True,
     load_in_8bit=False,
