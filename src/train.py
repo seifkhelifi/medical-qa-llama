@@ -11,7 +11,7 @@ from transformers import TrainingArguments
 from kaggle_secrets import UserSecretsClient
 from trl import SFTTrainer, DataCollatorForCompletionOnlyLM
 
-from data_preparation import prepare_qwen_dataset
+from data_preparation import prepare_dataset
 
 # ==========================================================
 # Setup Environment
@@ -64,7 +64,7 @@ if is_main_process():
 # Load Model
 # ==========================================================
 model, tokenizer = FastLanguageModel.from_pretrained(
-    model_name="unsloth/Qwen3-4B-Instruct-2507-unsloth-bnb-4bit",
+    model_name="unsloth/Llama-3.2-3B-bnb-4bit",
     max_seq_length=1024,
     load_in_4bit=True,
     load_in_8bit=False,
@@ -82,7 +82,7 @@ if tokenizer.pad_token is None:
 # Prepare Dataset
 # ==========================================================
 
-formatted_dataset = prepare_qwen_dataset(
+formatted_dataset = prepare_dataset(
     dataset_name="petkopetkov/medical-question-answering-synthetic", tokenizer=tokenizer
 )
 
@@ -123,6 +123,7 @@ model = FastLanguageModel.get_peft_model(
     use_rslora=False,
     loftq_config=None,
 )
+
 
 # ==========================================================
 # Trainer Configuration

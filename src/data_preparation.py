@@ -8,7 +8,7 @@ from typing import Dict, Any
 from unsloth.chat_templates import get_chat_template, standardize_data_formats
 
 
-def prepare_qwen_dataset(
+def prepare_dataset(
     dataset_name: str,
     tokenizer,
     num_proc: int = 4,
@@ -19,7 +19,7 @@ def prepare_qwen_dataset(
         "professional care for personal medical advice."
     ),
 ) -> DatasetDict:
-    tokenizer = get_chat_template(tokenizer, chat_template="qwen3-instruct")
+    tokenizer = get_chat_template(tokenizer, chat_template="llama-3.1")
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 
