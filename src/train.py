@@ -90,7 +90,7 @@ if tokenizer.pad_token is None:
 # ==========================================================
 
 formatted_dataset = prepare_qwen_dataset(
-    dataset_name="petkopetkov/medical-question-answering-all", tokenizer=tokenizer
+    dataset_name="petkopetkov/medical-question-answering-synthetic", tokenizer=tokenizer
 )
 
 
